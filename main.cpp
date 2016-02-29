@@ -5,13 +5,15 @@
 #include <string>
 #include <cstring>
 #include <cctype>
-
+#include <vector>
 using namespace std;
 
 const char Operators[] = {'|', '^', '&', '~'};
+const int MAX_N = 10;
 
 stack<char> Stack_Operator;
-stack<int> Stack_Number;
+stack<bool> Stack_Number;
+vector<int> loc[MAX_N];
 
 string filter(char *s) {
 	string result = "";
@@ -39,7 +41,7 @@ bool IsOperator(char ch) {
     return priority(ch) >= 0;
 }
 
-void GetTwoNumbers(stack<int> &Stack, int &first, int &second) {
+void GetTwoNumbers(stack<bool> &Stack, bool &first, bool &second) {
 
     second = Stack.top();
     Stack.pop();
@@ -48,7 +50,7 @@ void GetTwoNumbers(stack<int> &Stack, int &first, int &second) {
     Stack.pop();
 }
 
-int CalcEq(int first, int second, char op) {
+bool CalcEq(bool first, bool second, char op) {
 	if (op == '|') return first | second;
 	if (op == '^') return first ^ second;
 	if (op == '&') return first & second;
@@ -103,14 +105,14 @@ int SolvePostfix(const string &postfix) {
 	for (auto ch : postfix) {
 		if (IsOperator(ch)) {
 			if (ch == '~') {
-				int x = Stack_Number.top();
+				bool x = Stack_Number.top();
 				Stack_Number.pop();
-				Stack_Number.push(~x);
+				Stack_Number.push(!x);
 			}
 			else {
-				int x, y;
+				bool x, y;
 				GetTwoNumbers(Stack_Number, x, y);
-				int result = CalcEq(x, y, ch);
+				bool result = CalcEq(x, y, ch);
 				Stack_Number.push(result);
 			}
 		}
@@ -125,11 +127,36 @@ int SolvePostfix(const string &postfix) {
 	return ans;
 }
 
+void solve(const string &s) {
+	string infix;
+	for (int i = 0; i < MAX_N; i++)
+		loc[i].clear();
+
+    int len = s.length();
+    for (int i = 0; i < len; i++)
+		if (isalpha(s[i])) {
+			loc[s[i] - 'A'].push_back(i);
+		}
+	int cnt;
+	for (cnt = 0; loc[cnt].size() != 0; cnt++);
+	for (int mask = (1 << cnt) - 1; mask >= 0; mask--) {
+		infix = s;
+		for (int i = 0; i < cnt; i++) {
+			int value = (mask >> i) & 1;
+			for (int j = 0; j < loc[i].size(); j++) {
+				int pos = loc[i][j];
+				infix[pos] = '0' + value;
+			}
+		}
+		cout << infix << " = " << SolvePostfix(InfixToPostfix(infix)) << endl;
+	}
+}
 int main() {
 	char InString[255];
-    string infix, postfix;
+    string s;
     gets(InString);
-    infix = filter(InString);
-	cout << SolvePostfix(InfixToPostfix(infix)) << endl;
+    s = filter(InString);
+    solve(s);
+	//cout << SolvePostfix(InfixToPostfix(infix)) << endl;
 }
 

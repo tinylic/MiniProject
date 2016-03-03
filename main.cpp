@@ -15,6 +15,11 @@ stack<char> Stack_Operator;
 stack<bool> Stack_Number;
 vector<int> loc[MAX_N];
 vector<int> MinTerm;
+vector<int> ImpContained[1 << MAX_N];
+vector<int> MinTermCovered[1 << MAX_N];
+bool table[1 << MAX_N][1 << MAX_N];
+bool contained[1 << MAX_N];
+
 int TotalVariables = 0;
 int CountOne(int x) {
 	int ans = 0;
@@ -31,6 +36,7 @@ struct implication {
 	int ones;
 	string exp;
 	bool used;
+	bool selected;
 	implication() {
 		bit = xterm = ones = used = 0;
 		exp = "";
@@ -49,7 +55,7 @@ struct implication {
 			_xterm = _xterm >> 1;
 			mask = mask >> 1;
 		}
-		used = 0;
+		used = selected = false;
 	}
 
 	string show() {
@@ -84,6 +90,7 @@ string filter(char *s) {
 	}
 	return result;
 }
+
 void PushString(string &s, const char &ch) {
 	s.push_back(ch);
 	s.push_back(' ');
@@ -220,20 +227,55 @@ void ExpressionToChart() {
     solve(s);
 }
 
+bool CheckContained(const implication &imp, const int &x) {
+	int t = x;
+	for (int i = 0; i < TotalVariables; i++) {
+		int value = t & 1;
+		t >>= 1;
+		if (imp.exp[i] == '-') continue;
+		if (value != (imp.exp[i] - '0')) return false;
+	}
+	return true;
+}
 
+void Simplify() {
+	for (int i = 0; i < MinTerm.size(); i++)
+		if (MinTermCovered[i].size() == 1) {
+			int index = MinTermCovered[i][0];
+			primes[index].selected = true;
+			for (int j = 0; j < ImpContained[index].size(); j++)
+				contained[ImpContained[index][j]] = true;
+		}
+	while (true) {
+		bool stop = true;
+		for (int i = 0; i < MinTerm.size(); i++)
+			if (contained[i] == false)
+				stop = false;
+		if (stop) break;
+		for (int i = 0; i < MinTerm.size(); i++)
+			if (contained[i] == false) {
+				int index = MinTermCovered[i][0];
+				primes[index].selected = true;
+				for (int j = 0; j < ImpContained[index].size(); j++)
+					contained[ImpContained[index][j]] = true;
+			}
+	}
+}
 void ChartToExpression() {
+	memset(table, false, sizeof table);
+	memset(contained, false, sizeof contained);
 	imp.clear();
 	int x;
 	while ((scanf("%d", &x)) != EOF) {
 		MinTerm.push_back(x);
 	}
 	sort(MinTerm.begin(), MinTerm.end());
-    for (;(1 << TotalVariables) <= MinTerm[MinTerm.size() - 1]; TotalVariables ++);
-    cout << TotalVariables << endl;
-    for (int i = 0; i < MinTerm.size(); i++)
+	for (;(1 << TotalVariables) <= MinTerm[MinTerm.size() - 1]; TotalVariables ++);
+	cout << TotalVariables << endl;
+	for (int i = 0; i < MinTerm.size(); i++)
 		imp.push_back(implication(MinTerm[i], 0));
 	sort(imp.begin(), imp.end(), cmp);
-    while (imp.size() > 0) {
+	while (imp.size() > 0) {
 		roller.clear();
 		for (int i = 0; i < imp.size(); i++)
 			for (int j = i + 1; j < imp.size(); j++)
@@ -255,14 +297,39 @@ void ChartToExpression() {
 		imp = roller;
 		cout << "---------------------------" << endl;
 		for (int i = 0; i < imp.size(); i++)
-			cout << imp[i].bit << " " << imp[i].xterm << " " << imp[i].exp << endl;
+			cout << imp[i].ones << "\t" << imp[i].exp  << "\t" << (imp[i].used ? 'X' : ' ') << endl;
+	}
+	sort(primes.begin(), primes.end(), cmp);
+	for (int i = 0; i < primes.size(); i++)
+		ImpContained[i].clear();
+	for (int i = 0; i < MinTerm.size(); i++)
+		MinTermCovered[i].clear();
+	for (int i = 0; i < primes.size(); i++)
+		for (int j = 0; j < MinTerm.size(); j++)
+			if (CheckContained(primes[i], MinTerm[j])) {
+				table[i][j] = true;
+				ImpContained[i].push_back(j);
+				MinTermCovered[j].push_back(i);
+			}
+	for (int i = 0; i < MinTerm.size(); i++)
+		cout << "  \t" << MinTerm[i];
+	cout << endl;
+    for (int i = 0; i < primes.size(); i++) {
+		cout << primes[i].exp;
+		for (int j = 0; j < MinTerm.size(); j++) {
+			cout << "  \t";
+			if (table[i][j]) cout << "X";
+		}
+		cout << endl;
     }
-    sort(primes.begin(), primes.end(), cmp);
-    for (int i = 0; i < primes.size(); i++)
-		cout << primes[i].bit << " " << primes[i].xterm << " " << primes[i].exp << endl;
-	cout << primes[0].show();
-	for (int i = 1; i < primes.size(); i++)
-		cout << " + " << primes[i].show();
+    Simplify();
+    bool head = true;
+	for (int i = 0; i < primes.size(); i++)
+		if (primes[i].selected){
+			if (!head) cout << " + ";
+			cout << primes[i].show();
+			head = false;
+		}
 }
 int main() {
 	//ExpressionToChart();

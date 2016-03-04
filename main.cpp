@@ -15,7 +15,7 @@ stack<char> Stack_Operator;
 stack<bool> Stack_Number;
 vector<int> loc[MAX_N];
 vector<int> MinTerm;
-vector<int> ImpContained[1 << MAX_N];
+
 vector<int> MinTermCovered[1 << MAX_N];
 bool table[1 << MAX_N][1 << MAX_N];
 bool contained[1 << MAX_N];
@@ -37,9 +37,11 @@ struct implication {
 	string exp;
 	bool used;
 	bool selected;
+	vector<int> ImpContained;
 	implication() {
 		bit = xterm = ones = used = 0;
 		exp = "";
+		ImpContained.clear();
 	}
 
 	implication(int mask, int _xterm) {
@@ -238,27 +240,50 @@ bool CheckContained(const implication &imp, const int &x) {
 	return true;
 }
 
+vector<implication*> UPI;
 void Simplify() {
 	for (int i = 0; i < MinTerm.size(); i++)
 		if (MinTermCovered[i].size() == 1) {
 			int index = MinTermCovered[i][0];
 			primes[index].selected = true;
-			for (int j = 0; j < ImpContained[index].size(); j++)
-				contained[ImpContained[index][j]] = true;
+			for (int j = 0; j < primes[index].ImpContained.size(); j++)
+				contained[primes[index].ImpContained[j]] = true;
 		}
-	while (true) {
-		bool stop = true;
-		for (int i = 0; i < MinTerm.size(); i++)
-			if (contained[i] == false)
-				stop = false;
-		if (stop) break;
-		for (int i = 0; i < MinTerm.size(); i++)
-			if (contained[i] == false) {
-				int index = MinTermCovered[i][0];
-				primes[index].selected = true;
-				for (int j = 0; j < ImpContained[index].size(); j++)
-					contained[ImpContained[index][j]] = true;
+
+	//petrick
+	UPI.clear();
+	for (int i = 0; i < primes.size(); i++)
+		if (primes[i].selected == false)
+			UPI.push_back(&primes[i]);
+	bool tContained[1 << MAX_N];
+	int MinOne = 1 << MAX_N;
+	int result = 0;
+	for (int mask = 0; mask < (1 << (UPI.size())); mask++) {
+		memset(tContained, false, sizeof tContained);
+		for (int i = 0; i < UPI.size(); i++) {
+			int value = (mask >> i) & 1;
+			implication *mImp = UPI[i];
+			if (value) {
+				for (int j = 0; j < mImp -> ImpContained.size(); j++)
+					tContained[mImp -> ImpContained[j]] = true;
 			}
+		}
+		bool valid = true;
+		for (int i = 0; i < MinTerm.size(); i++)
+			if (contained[i] == false && tContained[i] == false)
+				valid = false;
+		if (valid) {
+			int ones = CountOne(mask);
+			if (MinOne > ones) {
+				MinOne = ones;
+				result = mask;
+			}
+		}
+	}
+	for (int i = 0; i < UPI.size(); i++) {
+		int value = (result >> i) & 1;
+		if (value)
+			UPI[i] -> selected = true;
 	}
 }
 void ChartToExpression() {
@@ -300,15 +325,13 @@ void ChartToExpression() {
 			cout << imp[i].ones << "\t" << imp[i].exp  << "\t" << (imp[i].used ? 'X' : ' ') << endl;
 	}
 	sort(primes.begin(), primes.end(), cmp);
-	for (int i = 0; i < primes.size(); i++)
-		ImpContained[i].clear();
 	for (int i = 0; i < MinTerm.size(); i++)
 		MinTermCovered[i].clear();
 	for (int i = 0; i < primes.size(); i++)
 		for (int j = 0; j < MinTerm.size(); j++)
 			if (CheckContained(primes[i], MinTerm[j])) {
 				table[i][j] = true;
-				ImpContained[i].push_back(j);
+				primes[i].ImpContained.push_back(j);
 				MinTermCovered[j].push_back(i);
 			}
 	for (int i = 0; i < MinTerm.size(); i++)

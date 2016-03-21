@@ -85,22 +85,8 @@ void ChartToExpression::Simplify() {
 	}
 }
 
-string ChartToExpression::solve(const string &truth_table) {
-	memset(table, false, sizeof table);
-	memset(contained, false, sizeof contained);
-	imp.clear();
-	cout << truth_table << endl;
-	for (int i = 0; i < truth_table.length(); i++)
-		if (truth_table[i] == '1'){
-		MinTerm.push_back(truth_table.length() - i - 1);
-	}
-	sort(MinTerm.begin(), MinTerm.end());
-	for (; (1 << TotalVariables) <= MinTerm[MinTerm.size() - 1];
-			TotalVariables++);
-	cout << TotalVariables << endl;
-	for (int i = 0; i < MinTerm.size(); i++)
-		imp.push_back(implication(MinTerm[i], 0, TotalVariables));
-	sort(imp.begin(), imp.end());
+void ChartToExpression::Quine_McCluskey() {
+	//q-m
 	while (imp.size() > 0) {
 		roller.clear();
 		for (int i = 0; i < imp.size(); i++)
@@ -130,6 +116,29 @@ string ChartToExpression::solve(const string &truth_table) {
 			cout << imp[i].ones << "\t" << imp[i].exp << "\t"
 					<< (imp[i].used ? 'X' : ' ') << endl;
 	}
+}
+string ChartToExpression::solve(const string &truth_table) {
+	memset(table, false, sizeof table);
+	memset(contained, false, sizeof contained);
+	imp.clear();
+	//get min terms
+	for (int i = 0; i < truth_table.length(); i++)
+		if (truth_table[i] == '1') {
+			MinTerm.push_back(truth_table.length() - i - 1);
+		}
+	sort(MinTerm.begin(), MinTerm.end());
+
+	//get variable numbers
+	for (; (1 << TotalVariables) <= MinTerm[MinTerm.size() - 1];
+			TotalVariables++);
+
+	//get initial implications
+	for (int i = 0; i < MinTerm.size(); i++)
+		imp.push_back(implication(MinTerm[i], 0, TotalVariables));
+	sort(imp.begin(), imp.end());
+
+	Quine_McCluskey();
+
 	sort(primes.begin(), primes.end());
 	for (int i = 0; i < MinTerm.size(); i++)
 		MinTermCovered[i].clear();
@@ -140,9 +149,12 @@ string ChartToExpression::solve(const string &truth_table) {
 				primes[i].ImpContained.push_back(j);
 				MinTermCovered[j].push_back(i);
 			}
+
+
 	ShowTable();
 
 	Simplify();
+
 	bool head = true;
 	string ans = "";
 	for (int i = 0; i < primes.size(); i++)

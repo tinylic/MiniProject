@@ -46,10 +46,10 @@ int implication::CountOne(int x) {
 
 string implication::show() {
 		string ans = "";
-		for (int i = TotalVariables - 1; i >= 0; i--) {
+		for (int i = 0; i < TotalVariables; i++) {
 			bool hidden = (xterm >> i) & 1;
 			if (!hidden) {
-				ans += ('A' + TotalVariables - 1 - i);
+				ans += ('A' + i);
 				if (!((bit >> i) & 1))
 					ans += '\'';
 			}

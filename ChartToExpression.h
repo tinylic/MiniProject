@@ -42,6 +42,8 @@ public:
 
 	void Simplify();
 
+	void Quine_McCluskey();
+
 	string solve(const string &truth_table);
 
 	void ShowTable();

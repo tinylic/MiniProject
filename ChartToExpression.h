@@ -42,7 +42,9 @@ public:
 
 	void Simplify();
 
-	void solve();
+	string solve(const string &truth_table);
+
+	void ShowTable();
 };
 
 #endif /* CHARTTOEXPRESSION_H_ */

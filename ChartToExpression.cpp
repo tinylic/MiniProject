@@ -9,7 +9,7 @@
 
 ChartToExpression::ChartToExpression() {
 	// TODO Auto-generated constructor stub
-
+	TotalVariables = 0;
 }
 
 ChartToExpression::~ChartToExpression() {
@@ -85,18 +85,18 @@ void ChartToExpression::Simplify() {
 	}
 }
 
-void ChartToExpression::solve() {
+string ChartToExpression::solve(const string &truth_table) {
 	memset(table, false, sizeof table);
 	memset(contained, false, sizeof contained);
 	imp.clear();
-	int x;
-	while ((scanf("%d", &x)) && x != -1) {
-		MinTerm.push_back(x);
+	cout << truth_table << endl;
+	for (int i = 0; i < truth_table.length(); i++)
+		if (truth_table[i] == '1'){
+		MinTerm.push_back(truth_table.length() - i - 1);
 	}
 	sort(MinTerm.begin(), MinTerm.end());
 	for (; (1 << TotalVariables) <= MinTerm[MinTerm.size() - 1];
-			TotalVariables++)
-		;
+			TotalVariables++);
 	cout << TotalVariables << endl;
 	for (int i = 0; i < MinTerm.size(); i++)
 		imp.push_back(implication(MinTerm[i], 0, TotalVariables));
@@ -140,25 +140,34 @@ void ChartToExpression::solve() {
 				primes[i].ImpContained.push_back(j);
 				MinTermCovered[j].push_back(i);
 			}
-	for (int i = 0; i < MinTerm.size(); i++)
-		cout << "  \t" << MinTerm[i];
-	cout << endl;
-	for (int i = 0; i < primes.size(); i++) {
-		cout << primes[i].exp;
-		for (int j = 0; j < MinTerm.size(); j++) {
-			cout << "  \t";
-			if (table[i][j])
-				cout << "X";
-		}
-		cout << endl;
-	}
+	ShowTable();
+
 	Simplify();
 	bool head = true;
+	string ans = "";
 	for (int i = 0; i < primes.size(); i++)
 		if (primes[i].selected) {
 			if (!head)
-				cout << " + ";
-			cout << primes[i].show();
+				ans = ans + " + ";
+			ans = ans + primes[i].show();
 			head = false;
 		}
+	return ans;
+}
+
+void ChartToExpression::ShowTable() {
+	for (int i = 0; i <= TotalVariables; i++)
+		cout << " ";
+	for (int i = 0; i < MinTerm.size(); i++)
+		cout << "\t" << MinTerm[i];
+	cout << endl;
+	for (int i = 0; i < primes.size(); i++) {
+		cout << primes[i].exp << " ";
+		for (int j = 0; j < MinTerm.size(); j++) {
+			if (table[i][j])
+				cout << "X";
+			cout << "\t";
+		}
+		cout << endl;
+	}
 }

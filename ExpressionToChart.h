@@ -19,7 +19,7 @@ private:
 	stack<bool> Stack_Number;
 	vector<int> loc[MAX_N];
 
-	string filter(char *s);
+	string filter(const string &s);
 
 	void PushString(string &s, const char &ch);
 
@@ -40,7 +40,7 @@ public:
 
 	virtual ~ExpressionToChart();
 
-	void solve();
+	string solve(int n, const string &InString);
 };
 
 #endif /* EXPRESSIONTOCHART_H_ */

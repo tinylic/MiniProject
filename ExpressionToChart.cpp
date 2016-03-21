@@ -9,9 +9,9 @@
 
 
 
-string ExpressionToChart::filter(char *s) {
+string ExpressionToChart::filter(const string &s) {
 	string result = "";
-	for (int i = 0; i < strlen(s); i++) {
+	for (int i = 0; i < s.length(); i++) {
 		char ch = s[i];
 		if (ch != ' ')
 			result.push_back(ch);
@@ -88,7 +88,7 @@ string ExpressionToChart::InfixToPostfix(const string &infix) {
     }
 
     postfix.pop_back();
-    cout << postfix << endl;
+    //cout << postfix << endl;
     return postfix;
 }
 
@@ -122,10 +122,8 @@ int ExpressionToChart::SolvePostfix(const string &postfix) {
 	return ans;
 }
 
-void ExpressionToChart::solve() {
-	char InString[255];
+string ExpressionToChart::solve(int n, const string &InString) {
     string s;
-    cin.getline(InString, 255);
     s = filter(InString);
 	string infix;
 	for (int i = 0; i < MAX_N; i++)
@@ -136,19 +134,22 @@ void ExpressionToChart::solve() {
 		if (isalpha(s[i])) {
 			loc[s[i] - 'A'].push_back(i);
 		}
-	int cnt;
-	for (cnt = 0; loc[cnt].size() != 0; cnt++);
-	for (int mask = (1 << cnt) - 1; mask >= 0; mask--) {
+	//int cnt;
+	//for (cnt = 0; loc[cnt].size() != 0; cnt++);
+    string ans = "";
+	for (int mask = (1 << n) - 1; mask >= 0; mask--) {
 		infix = s;
-		for (int i = 0; i < cnt; i++) {
+		for (int i = 0; i < n; i++) {
 			int value = (mask >> i) & 1;
 			for (int j = 0; j < loc[i].size(); j++) {
 				int pos = loc[i][j];
 				infix[pos] = '0' + value;
 			}
 		}
-		cout << infix << " = " << SolvePostfix(InfixToPostfix(infix)) << endl;
+		char result = '0' + SolvePostfix(InfixToPostfix(infix));
+		ans = ans + result;
 	}
+	return ans;
 }
 
 ExpressionToChart::ExpressionToChart() {

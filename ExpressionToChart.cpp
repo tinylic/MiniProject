@@ -134,8 +134,6 @@ string ExpressionToChart::solve(int n, const string &InString) {
 		if (isalpha(s[i])) {
 			loc[s[i] - 'A'].push_back(i);
 		}
-	//int cnt;
-	//for (cnt = 0; loc[cnt].size() != 0; cnt++);
     string ans = "";
 	for (int mask = (1 << n) - 1; mask >= 0; mask--) {
 		infix = s;

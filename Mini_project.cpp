@@ -9,6 +9,7 @@
 #include <iostream>
 #include "ExpressionToChart.h"
 #include "ChartToExpression.h"
+#include "simple_test.h"
 using namespace std;
 string expr_to_truthtable(int n, const string& expr) {
 	ExpressionToChart ETC;

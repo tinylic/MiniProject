@@ -1,2 +1,58 @@
-\section{问题简述}
-测试一下
+
+\section{Overview}
+
+\subsection{问题描述}
+
+\begin{itemize}
+
+\item{\Large{编写一个函数，计算逻辑表达式的真值表}}
+	\begin{itemize}
+		\item	逻辑表达式最多有8个输入项，分别为$A,B,C,D,E,F,G,H$；
+
+		\item	支持的逻辑运算符按优先级从高到低分别为$\sim$（非）、$\&$（与）、$\land$（异或）、$\mid$（或）；
+	
+	\end{itemize}
+\item{\Large{编写一个函数，根据真值表计算逻辑表达式，以字符串格式输出}}
+	\begin{itemize}
+		\item	使用Quine-McCluskey算法对逻辑表达式进行化简。	
+	\end{itemize}
+
+\item{\Large{函数接口：}}
+	\begin{itemize}
+		\item	std::string expr$\_$to$\_$truthtable(int n, const std::string$\&$ expr);
+
+其中n是变量个数，expr是逻辑表达式，返回真值表。
+
+		\item	std::string truthtable$\_$to$\_$expr(const std::string$\&$ truth$\_$table);
+
+其中truth$\_$table是真值表，返回逻辑表达式。
+	
+	\end{itemize}
+
+若参数无效，函数抛出异常。
+
+\item{\Large{要求}}
+	\begin{itemize}
+		\item	使用第5讲的测试框架对两个函数进行测试；提交源代码与设计文档。
+		\item	文档内容包括：设计思路、数据结构与算法、重要的类与函数的说明、测试用例的设计等等，也可以写完成Project的心得体会、经验与教训等。
+	
+	\end{itemize}
+
+\end{itemize}
+
+\subsection{解题概况}
+	最终程序各部分及其作用如下表
+
+	\begin{center}
+		\begin{tabular}{|c|c|}
+			\hline  Documents & Functions\\
+			\hline  constants.h & 常量的定义\\
+			\hline  simple$\_$test.h & 参与测试\\
+			\hline  ChartToExpression.h & 将真值表转换为逻辑表达式\\
+			\hline  ExpressionToChart.h & 将逻辑表达式转换为真值表\\
+			\hline  implication & 质蕴涵项的实现\\
+			\hline
+		\end{tabular}
+	\end{center}	
+	
+	下面就各部分的解题思路及实现进行详细讨论	

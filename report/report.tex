@@ -9,6 +9,7 @@
 	
 % big font for sections
 \usepackage{sectsty}
+\usepackage{setspace}
 \sectionfont{\LARGE}
 
 \usepackage{graphicx}
@@ -16,6 +17,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{listings}
+\usepackage{array}
 \usepackage[colorlinks,
 linkcolor=black,
 anchorcolor=black,
@@ -62,6 +64,7 @@ citecolor=black
 
 
 %=================
+\begin{spacing}{1.5}
 \include{sections/introduction}
 \include{sections/ideas}
 \include{sections/structures}
@@ -69,7 +72,7 @@ citecolor=black
 \include{sections/testing}
 
 \input{sections/conclusion}
-
+\end{spacing}
 
 %=================
 

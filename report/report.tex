@@ -1,0 +1,76 @@
+% !TEX encoding = UTF-8 Unicode
+\documentclass{report}
+%\usepackage{xeCJK}
+
+%\setCJKmainfont{微软雅黑}
+\title{test Collection}
+\author{Michael Jordan}
+\date{\today}
+	
+% big font for sections
+\usepackage{sectsty}
+\sectionfont{\LARGE}
+
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage[colorlinks,
+linkcolor=black,
+anchorcolor=black,
+citecolor=black
+]{hyperref}
+
+% \begin{comment} ... \end{comment{}
+%\usepackage{verbatim}
+
+\setlength{\parskip}{0pt}
+
+\makeatletter
+\renewcommand{\paragraph}{
+  \@startsection{paragraph}{4}
+    {\z@}{1.25ex \@plus 1ex \@minus .2ex}{-1em}
+      {\normalfont\normalsize\bfseries}
+      }
+      \makeatother
+
+\usepackage[
+	sorting=none,
+	minbibnames=8,
+	maxbibnames=9,
+	block=space,
+	backend=biber
+]{biblatex}
+\bibliography{publications}
+
+
+\usepackage{parskip}
+
+\usepackage{lipsum}
+
+\begin{document}
+
+\newpage
+
+\maketitle
+
+\newpage
+
+\renewcommand{\contentsname}{Table of Content}
+\tableofcontents
+
+
+%=================
+\include{sections/introduction}
+\include{sections/ideas}
+\include{sections/structures}
+\include{sections/main-algorithm}
+\include{sections/testing}
+
+\input{sections/conclusion}
+
+
+%=================
+
+\end{document}

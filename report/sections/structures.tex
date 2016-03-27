@@ -1,4 +1,131 @@
-\section{程序结构}
-\label{sec:structures}
+\section{Project Structures}
+\subsection{ChartToExpression}
 
-\lipsum[4-6]
+对于第一个问题，我们使用ChartToExpression类来实现，程序声明如下：
+
+\lstinputlisting{sources/ExpressionToChart.txt}
+
+其中各变量及函数作用如下：
+
+\begin{itemize}
+	\item{变量}
+	\begin{center}
+		\begin{tabular}{cc}
+			变量 & 作用 \\
+			operators[] & 储存定义的四种运算符\\
+			Stack$\_$Operator & 运算符的堆栈 \\
+			Stack$\_$Number & 运算结果的堆栈 \\
+			loc[MAX$\_$N] & 储存字符出现位置，便于代入数值\\
+		\end{tabular}
+	\end{center}
+	\item{函数}
+	\begin{center}
+		\begin{tabular}{cc}
+			函数 & 作用 \\
+			ExpressionToChart() & 构造函数\\
+			virtual ~ExpressionToChart() & 析构函数 \\
+			Stack$\_$Number & 运算结果的堆栈 \\
+			string solve(int n, const string $\&$InString) & 
+			\textbf{将输入的表达式转换为真值表输出}\\
+			string filter(const string $\&$s) &
+			将输入的表达式去除多余空格\\
+			string InfixToPostfix(const string $\&$infix) &
+			\textbf{中缀表达式转换为波兰式}\\
+			void PushString(string $\&$s, const char $\&$ch) &
+			转化时向波兰式中添加字符\\
+			bool IsOperator(char ch) &
+			判断当前字符是否为运算符\\
+			int priority(char Operator) &
+			若是运算符，返回其优先级 \\
+			int SolvePostfix(const string $\&$postfix) &
+			\textbf{计算后缀表达式的值}\\
+			void GetTwoNumbers(bool $\&$first, bool $\&$second) &
+			在运算结果栈中取出两个元素用于计算\\
+			bool CalcEq(bool first, bool second, char op) &
+			给定运算数和运算符，计算结果\\
+		\end{tabular}
+	\end{center}
+\end{itemize}
+\subsection{ExpressionToChart}
+对于将真值表转换为表达式的问题，我们采用Quine-McCluskey算法，主要使用ExpressionToChart类实现。
+
+同时，由于对质蕴涵项这一概念使用较多，因此将它单独建立implication类，以增强内聚度
+
+implication类声明如下：
+\lstinputlisting{sources/implication.txt}
+
+其中各变量及函数作用如下：
+
+\begin{itemize}
+	\item{变量}
+	\begin{center}
+		\begin{tabular}{cc}
+			变量 & 作用 \\
+			int TotalVariables & 总变量个数\\
+			int bit & 当前质蕴涵的二进制表示\\
+			int xterm & 质蕴涵的任意项，该位为1即为任意项 \\
+			int ones & 质蕴涵中1的个数 \\
+			string exp & 当前质蕴涵的二进制表示（输出用）\\
+			bool used & 表示该蕴涵项是否被覆盖(Q-M算法中)\\
+			bool selected & 表示该蕴含项是否是出现在结果中（petrick化简） \\
+			vector<int> ImpContained & 该质蕴涵包含的蕴涵项\\
+
+		\end{tabular}
+	\end{center}
+	\item{函数}
+	\begin{center}
+		\begin{tabular}{cc}
+			函数 & 作用 \\
+			implication() & 默认构造函数\\
+			virtual ~implication() & 析构函数 \\
+			implication(int mask, int xterm, int TotalVariables) & 构造函数\\
+			int CountOne(int x) & 统计x的二进制表示中1的个数\\
+			string show(); & 输出该蕴涵项\\
+		\end{tabular}
+	\end{center}
+\end{itemize}
+
+
+ChartToExpression类声明如下：
+\lstinputlisting{sources/ChartToExpression.txt}
+
+其中各变量及函数作用如下：
+
+\begin{itemize}
+	\item{变量}
+	\begin{center}
+		\begin{tabular}{cc}
+			变量 & 作用 \\
+			int TotalVariables & 总变量个数 \\
+			vector<int> MinTerm & 输入的最小项,用int表示\\
+			vector<implication> imp & 储存最小项,参与Q-M算法计算\\
+			vector<implication> roller & Q-M算法中与imp迭代的数组\\
+			vector<int> MinTermCovered[1 << MAX$\_$N] &
+			可以覆盖该最小项的所有蕴涵\\
+			bool table[1 << MAX$\_$N][1 << MAX$\_$N] &
+			可视化蕴涵与最小项的关系\\
+			bool contained[1 << MAX$\_$N] & 
+			表示每个蕴涵项是否需要petrick化简\\
+			vector<implication> primes &
+			储存质蕴涵项\\
+
+		\end{tabular}
+	\end{center}
+	\item{函数}
+	\begin{center}
+		\begin{tabular}{cc}
+			函数 & 作用 \\
+			ChartToExpression() & 构造函数\\
+			virtual ~ChartToExpression() & 析构函数\\
+			string solve(const string $\&$truth$\_$table) &
+			输入真值表，返回化简后表达式\\
+			void Quine-McCluskey() & 实现Quine-McCluskey算法\\
+			void Simplify() & 对结果化简，使用到了petrick算法\\
+			int CountOne(int x) & 统计x的二进制表示中1的个数\\
+			bool CheckContained(const implication $\&$imp, const int $\&$x) &
+			判断蕴涵Imp是否包含了最小项x\\
+			void ShowTable() & 将中间结果可视化\\
+		\end{tabular}
+	\end{center}
+\end{itemize}
+

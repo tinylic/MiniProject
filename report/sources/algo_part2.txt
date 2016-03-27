@@ -1,0 +1,27 @@
+int SolvePostfix(const string &postfix) {
+	while (!Stack_Number.empty()) {
+		Stack_Number.pop();
+	}
+	for (auto ch : postfix) {
+		if (IsOperator(ch)) {
+			if (ch == '~') {
+				bool x = Stack_Number.top();
+				Stack_Number.pop();
+				Stack_Number.push(!x);
+			}
+			else {
+				bool x, y;
+				GetTwoNumbers(Stack_Number, x, y);
+				bool result = CalcEq(x, y, ch);
+				Stack_Number.push(result);
+			}
+		}
+		else
+			if (ch != ' '){
+				Stack_Number.push(ch - '0');
+			}
+	}
+	int ans = Stack_Number.top();
+	Stack_Number.pop();
+	return ans;
+}

@@ -1,0 +1,18 @@
+int len = s.length();
+for (int i = 0; i < len; i++)
+	if (isalpha(s[i])) {
+		loc[s[i] - 'A'].push_back(i);
+	}
+string ans = "";
+for (int mask = (1 << n) - 1; mask >= 0; mask--) {
+	infix = s;
+	for (int i = 0; i < n; i++) {
+		int value = (mask >> i) & 1;
+		for (int j = 0; j < loc[i].size(); j++) {
+			int pos = loc[i][j];
+			infix[pos] = '0' + value;
+		}
+	}
+	char result = '0' + SolvePostfix(InfixToPostfix(infix));
+	ans = ans + result;
+}

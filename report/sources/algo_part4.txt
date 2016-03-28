@@ -1,0 +1,8 @@
+for (unsigned i = 0; i < MinTerm.size(); i++)
+	if (MinTermCovered[i].size() == 1) {
+		int index = MinTermCovered[i][0];
+		primes[index].selected = true;
+		for (unsigned j = 0; j < primes[index].ImpContained.size(); j++)
+			contained[primes[index].ImpContained[j]] = true;
+	}
+

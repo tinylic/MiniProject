@@ -1,0 +1,33 @@
+for (unsigned i = 0; i < primes.size(); i++)
+	if (primes[i].selected == false)
+		UPI.push_back(&primes[i]);
+bool tContained[1 << MAX_N];
+int MinOne = 1 << MAX_N;
+int result = 0;
+for (int mask = 0; mask < (1 << (UPI.size())); mask++) {
+	memset(tContained, false, sizeof tContained);
+	for (unsigned i = 0; i < UPI.size(); i++) {
+		int value = (mask >> i) & 1;
+		implication *mImp = UPI[i];
+		if (value) {
+			for (unsigned j = 0; j < mImp->ImpContained.size(); j++)
+				tContained[mImp->ImpContained[j]] = true;
+		}
+	}
+	bool valid = true;
+	for (unsigned i = 0; i < MinTerm.size(); i++)
+		if (contained[i] == false && tContained[i] == false)
+			valid = false;
+	if (valid) {
+		int ones = CountOne(mask);
+		if (MinOne > ones) {
+			MinOne = ones;
+			result = mask;
+		}
+	}
+}
+for (int i = 0; i < UPI.size(); i++) {
+	int value = (result >> i) & 1;
+	if (value)
+		UPI[i]->selected = true;
+}

@@ -1,0 +1,32 @@
+void Quine_McCluskey() {
+	//keep looping until no more pairs	
+	while (imp.size() > 0) {
+		roller.clear();
+		//deleting redundant terms
+		for (int i = 0; i < imp.size(); i++)
+			for (int j = i + 1; j < imp.size(); j++)
+				if (imp[i].exp == imp[j].exp) {
+					imp.erase(imp.begin() + j);
+				}
+		//finding new pairs
+		for (int i = 0; i < imp.size(); i++)
+			for (int j = i + 1; j < imp.size(); j++)
+				//if i and j can form pairs						
+				if (imp[j].ones == imp[i].ones + 1
+				&& imp[j].xterm == imp[i].xterm
+				&& CountOne(imp[j].bit ^ imp[i].bit) == 1) {
+				imp[i].used = true;
+				imp[j].used = true;
+				implication NewImp = implication(imp[i].bit,
+					(imp[i].bit ^ imp[j].bit) | imp[i].xterm,
+					TotalVariables);
+				roller.push_back(NewImp);
+				}
+		//terms that cannot be paired are prime
+		for (int i = 0; i < imp.size(); i++)
+			if (imp[i].used == false)
+				primes.push_back(imp[i]);
+		sort(roller.begin(), roller.end());
+		imp = roller;
+	}
+}

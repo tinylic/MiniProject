@@ -67,7 +67,63 @@
 
 \subsection{ExpressionToChart}
 \subsubsection{Quine–McCluskey算法}
+	Quine–McCluskey算法是最小化布尔函数的一种方法。它在功能上等同于卡诺图，但是它具有文字表格的形式，因此它更适合用于电子设计自动化算法的实现，并且它还给出了检查布尔函数是否达到了最小化形式的确定性方法。
 	
+	Quine–McCluskey算法的基本步骤如下：
+	\begin{itemize}
+		\item{STEP 1\\}	
+			将表达式中的最小项用他们的等价二进制数表示
+		\item{STEP 2\\}
+			将最小项根据它们所含的1的个数进行分组，形成一张最小项表。
+			
+			如第一组为不含1的，第二组中每个含一个1，以此类推
+		\item{STEP 3\\}
+			将每个最小项$i$与它下一组的所有最小项$j$进行比较。显然，$j$会比$i$多一个1。
+			
+			如果$i$与$j$只有一位$b$不同（包括任意项），标记这两个最小项配对成功，将$b$位标记为任意项。
+			
+			将合并后的新最小项加入新的最小项表中。
+			
+		\item{STEP 4\\}
+			对于每一次形成的新最小项表，重复STEP 3，直到不能产生任何的新配对。
+		
+		\item{STEP 5\\}
+			每一步剩下未配对的即为质蕴涵。（但并不是必要质蕴涵）
+	\end{itemize}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[scale=0.5]{images/QM.jpg}
+		\caption{最小项表}
+	\end{figure}
+	
+	由于Quine–McCluskey算法的描述比较清晰，按描述模拟即可。
+	
+	\lstinputlisting{sources/algo_part3.txt}	
+
 \subsubsection{化简}
-\paragraph{基础化简}
-\paragraph{petrick化简}
+	化简分为两步：
+	\begin{itemize}
+		\item	若一个最小项只被一个质蕴涵包含，则该质蕴涵必须选
+		\item	若剩余未被覆盖的最小项均被多个质蕴涵包含，则运用petrick算法进行化简
+	\end{itemize}
+\paragraph{基础化简\\}
+	首先进行筛选，若一个最小项只被一个质蕴涵包含，则直接标记该质蕴涵为已选
+
+	\lstinputlisting{sources/algo_part4.txt}	
+
+\paragraph{进阶化简\\}
+	若出现以下这种情况，基本的化简就无计可施了：
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[scale=1]{images/petrick.jpg}
+	\end{figure}
+
+	即每个最小项都被至少两个质蕴涵覆盖。
+	
+	通用的算法是使用petrick化简，但是由于本题数据范围较小，可以直接对剩下的质蕴涵，直接穷举它是否被取，然后从所有方案中取选择质蕴涵最少的方案。
+	
+	这种方法的时间复杂度为$O(2 \land \mbox{剩余质蕴涵个数})$，由于剩余质蕴涵个数不会超过$2 ^ {n/2}$，因此时间复杂度不会超过$2 ^ {16} = 65536$，是完全可以接受的
+	
+	\lstinputlisting{sources/algo_part5.txt}	

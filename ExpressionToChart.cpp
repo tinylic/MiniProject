@@ -13,6 +13,11 @@ string ExpressionToChart::filter(const string &s) {
 	string result = "";
 	for (int i = 0; i < s.length(); i++) {
 		char ch = s[i];
+		if (ch != ' ' && (isalpha(ch) == false) &&
+			(ch != '(') && (ch != ')') &&
+			(IsOperator(ch) == false)) {
+			throw InvalidCharError{};
+		}
 		if (ch != ' ')
 			result.push_back(ch);
 	}
@@ -37,9 +42,14 @@ bool ExpressionToChart::IsOperator(char ch) {
 }
 
 void ExpressionToChart::GetTwoNumbers(stack<bool> &Stack, bool &first, bool &second) {
-
+	if (Stack.empty()) {
+		throw SyntaxError{};
+	}
     second = Stack.top();
     Stack.pop();
+    if (Stack.empty()) {
+    	throw SyntaxError{};
+    }
 
     first = Stack.top();
     Stack.pop();
@@ -75,6 +85,9 @@ string ExpressionToChart::InfixToPostfix(const string &infix) {
 						PushString(postfix, Stack_Operator.top());
 						Stack_Operator.pop();
 					}
+					if (Stack_Operator.empty()) {
+						throw BracketMismatchingError{};
+					}
 					Stack_Operator.pop();
 					break;
 				default :
@@ -88,7 +101,6 @@ string ExpressionToChart::InfixToPostfix(const string &infix) {
     }
 
     postfix.pop_back();
-    //cout << postfix << endl;
     return postfix;
 }
 
@@ -116,7 +128,9 @@ int ExpressionToChart::SolvePostfix(const string &postfix) {
 				Stack_Number.push(ch - '0');
 			}
 	}
-
+	if (Stack_Number.size() != 1) {
+		throw SyntaxError{};
+	}
 	int ans = Stack_Number.top();
 	Stack_Number.pop();
 	return ans;
@@ -125,13 +139,18 @@ int ExpressionToChart::SolvePostfix(const string &postfix) {
 string ExpressionToChart::solve(int n, const string &InString) {
     string s;
     s = filter(InString);
+    if (s.length() == 0) {
+    	throw EmptyStringError{};
+    }
 	string infix;
 	for (int i = 0; i < MAX_N; i++)
 		loc[i].clear();
-
-    int len = s.length();
+	int len = s.length();
     for (int i = 0; i < len; i++)
 		if (isalpha(s[i])) {
+			if ((s[i] - 'A') >= n) {
+				throw InvalidVariableError{};
+			}
 			loc[s[i] - 'A'].push_back(i);
 		}
     string ans = "";

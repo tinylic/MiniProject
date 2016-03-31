@@ -111,26 +111,43 @@ void ChartToExpression::Quine_McCluskey() {
 				primes.push_back(imp[i]);
 		sort(roller.begin(), roller.end());
 		imp = roller;
-		cout << "---------------------------" << endl;
+		cerr << "---------------------------" << endl;
 		for (int i = 0; i < imp.size(); i++)
-			cout << imp[i].ones << "\t" << imp[i].exp << "\t"
+			cerr << imp[i].ones << "\t" << imp[i].exp << "\t"
 					<< (imp[i].used ? 'X' : ' ') << endl;
 	}
 }
 string ChartToExpression::solve(const string &truth_table) {
 	memset(table, false, sizeof table);
 	memset(contained, false, sizeof contained);
+	MinTerm.clear();
+	primes.clear();
 	imp.clear();
-	//get min terms
-	for (int i = 0; i < truth_table.length(); i++)
+	cerr << truth_table << endl;
+	if (truth_table.length() == 0) {
+			throw EmptyStringError{};
+	}
+	//get variable numbers
+	for (TotalVariables = 1; (1 << TotalVariables) < truth_table.length();
+			TotalVariables++);
+	if (truth_table.length() != (1 << TotalVariables)) {
+		throw InvalidLengthError{};
+	}
+
+	for (int i = 0; i < truth_table.length(); i++) {
+		if (truth_table[i] != '0' && truth_table[i] != '1') {
+			throw InvalidCharError{};
+		}
 		if (truth_table[i] == '1') {
 			MinTerm.push_back(truth_table.length() - i - 1);
 		}
+	}
+	if (MinTerm.size() == truth_table.length())
+		return "1";
+	if (MinTerm.size() == 0)
+		return "0";
 	sort(MinTerm.begin(), MinTerm.end());
 
-	//get variable numbers
-	for (; (1 << TotalVariables) <= MinTerm[MinTerm.size() - 1];
-			TotalVariables++);
 
 	//get initial implications
 	for (int i = 0; i < MinTerm.size(); i++)
@@ -160,26 +177,27 @@ string ChartToExpression::solve(const string &truth_table) {
 	for (int i = 0; i < primes.size(); i++)
 		if (primes[i].selected) {
 			if (!head)
-				ans = ans + " + ";
+				ans = ans + " | ";
 			ans = ans + primes[i].show();
 			head = false;
 		}
+	cerr << ans << endl;
 	return ans;
 }
 
 void ChartToExpression::ShowTable() {
 	for (int i = 0; i <= TotalVariables; i++)
-		cout << " ";
+		cerr << " ";
 	for (int i = 0; i < MinTerm.size(); i++)
-		cout << "\t" << MinTerm[i];
-	cout << endl;
+		cerr << "\t" << MinTerm[i];
+	cerr << endl;
 	for (int i = 0; i < primes.size(); i++) {
-		cout << primes[i].exp << " ";
+		cerr << primes[i].exp << " ";
 		for (int j = 0; j < MinTerm.size(); j++) {
 			if (table[i][j])
-				cout << "X";
-			cout << "\t";
+				cerr << "X";
+			cerr << "\t";
 		}
-		cout << endl;
+		cerr << endl;
 	}
 }

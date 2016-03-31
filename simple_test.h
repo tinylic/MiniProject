@@ -75,26 +75,5 @@ namespace SimpleTest {
 	}
 }
 
-int main() {
-	using namespace SimpleTest;
-	int test_main();
-
-	try {
-		int result = test_main();
-		CHECK_EQUAL(result, 0);
-	}
-	catch (CriticalError) {
-		std::cerr << "Critical error occurred. Testing aborted.\n";
-	}
-	catch (...) {
-		exceptionError();
-	}
-	switch (errorCnt) {
-		case 0:  std::cout << " **** no errors detected\n"; return exitSuccess;
-		case 1:  std::cerr << " **** 1 error detected\n"; break;
-		default: std::cerr << " **** " << errorCnt << " errors detected\n"; break;
-	}
-	return exitTestFailure;
-}
 
 #endif

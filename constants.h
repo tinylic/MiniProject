@@ -18,6 +18,12 @@
 #include <vector>
 #define MAX_N 10
 
+struct InvalidCharError{};
+struct InvalidVariableError{};
+struct EmptyStringError{};
+struct SyntaxError{};
+struct BracketMismatchingError{};
+struct InvalidLengthError{};
 using namespace std;
 
 

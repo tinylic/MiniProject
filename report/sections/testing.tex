@@ -1,3 +1,42 @@
 \section{测试}
 
-\lipsum[4-6]
+\subsection{正确性测试}
+	首先，对于程序的正确性进行测试
+	
+	\paragraph{expr$\_$to$\_$truthtable\\}
+		\lstinputlisting{sources/test_part0.txt}
+	\paragraph{truthtable$\_$to$\_$expr\\}
+		\lstinputlisting{sources/test_part1.txt}	
+	\paragraph{cross$\_$validation\\}
+		\lstinputlisting{sources/test_part2.txt}	
+\subsection{健壮性测试}
+	检测程序对于异常输入的处理	
+	\paragraph{expr$\_$to$\_$truthtable\\}
+		划分等价类：
+		\begin{center}
+			\begin{tabular}{cc}
+				错误类型 & 抛出异常\\
+				空串 & EmptyStringError\\
+				非法字符 & InvalidCharError\\
+				参数个数错误 & InvalidVariableError\\
+				语法错误 & SyntaxError\\
+				括号不匹配 & BracketMismatchingError\\
+				正常输入 & No Error\\
+		\end{tabular}				
+		\end{center}
+
+		\lstinputlisting{sources/test_part3.txt}
+	\paragraph{truthtable$\_$to$\_$expr\\}
+		划分等价类：
+		\begin{center}
+			\begin{tabular}{cc}
+				错误类型 & 抛出异常\\
+				空串 & EmptyStringError\\
+				非法字符 & InvalidCharError\\
+				参数个数$!=2^n$ & InvalidLengthError\\
+				正常输入 & No Error\\
+		\end{tabular}				
+		\end{center}
+
+		\lstinputlisting{sources/test_part4.txt}	
+\subsection{效率测试}

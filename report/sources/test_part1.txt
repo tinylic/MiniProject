@@ -1,0 +1,16 @@
+//testing chart to expression
+
+//check all 0
+CHECK_EQUAL(CTE.solve("0000"), "0");
+
+//check all 1
+CHECK_EQUAL(CTE.solve("11"), "1");
+
+//check sample
+CHECK_EQUAL(CTE.solve("11010101"), "~A | B & C");
+
+//check complex input
+CHECK_EQUAL(CTE.solve(
+	"1111110111011101111111111111111111111101110111011111110111011101"),
+	"~A | ~E & F | B | C & D");
+

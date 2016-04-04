@@ -42,7 +42,7 @@ bool ChartToExpression::CheckContained(const implication &imp, const int &x) {
 void ChartToExpression::Simplify() {
 	for (unsigned i = 0; i < MinTerm.size(); i++)
 		if (MinTermCovered[i].size() == 1) {
-			int index = MinTermCovered[i][0];
+			int index = MinTermCovered[i].at(0);
 			primes[index].selected = true;
 			for (unsigned j = 0; j < primes[index].ImpContained.size(); j++)
 				contained[primes[index].ImpContained[j]] = true;
@@ -52,7 +52,7 @@ void ChartToExpression::Simplify() {
 	UPI.clear();
 	for (unsigned i = 0; i < primes.size(); i++)
 		if (primes[i].selected == false)
-			UPI.push_back(&primes[i]);
+			UPI.push_back(i);
 	bool tContained[1 << MAX_N];
 	int MinOne = 1 << MAX_N;
 	int result = 0;
@@ -60,10 +60,10 @@ void ChartToExpression::Simplify() {
 		memset(tContained, false, sizeof tContained);
 		for (unsigned i = 0; i < UPI.size(); i++) {
 			int value = (mask >> i) & 1;
-			implication *mImp = UPI[i];
+			implication mImp = primes[UPI[i]];
 			if (value) {
-				for (unsigned j = 0; j < mImp->ImpContained.size(); j++)
-					tContained[mImp->ImpContained[j]] = true;
+				for (unsigned j = 0; j < mImp.ImpContained.size(); j++)
+					tContained[mImp.ImpContained[j]] = true;
 			}
 		}
 		bool valid = true;
@@ -81,7 +81,7 @@ void ChartToExpression::Simplify() {
 	for (int i = 0; i < UPI.size(); i++) {
 		int value = (result >> i) & 1;
 		if (value)
-			UPI[i]->selected = true;
+			primes[UPI[i]].selected = true;
 	}
 }
 
@@ -111,10 +111,10 @@ void ChartToExpression::Quine_McCluskey() {
 				primes.push_back(imp[i]);
 		sort(roller.begin(), roller.end());
 		imp = roller;
-		cerr << "---------------------------" << endl;
-		for (int i = 0; i < imp.size(); i++)
-			cerr << imp[i].ones << "\t" << imp[i].exp << "\t"
-					<< (imp[i].used ? 'X' : ' ') << endl;
+		//cerr << "---------------------------" << endl;
+		//for (int i = 0; i < imp.size(); i++)
+			//cerr << imp[i].ones << "\t" << imp[i].exp << "\t"
+					//<< (imp[i].used ? 'X' : ' ') << endl;
 	}
 }
 string ChartToExpression::solve(const string &truth_table) {
@@ -123,7 +123,7 @@ string ChartToExpression::solve(const string &truth_table) {
 	MinTerm.clear();
 	primes.clear();
 	imp.clear();
-	cerr << truth_table << endl;
+	//cerr << truth_table << endl;
 	if (truth_table.length() == 0) {
 			throw EmptyStringError{};
 	}
@@ -168,7 +168,7 @@ string ChartToExpression::solve(const string &truth_table) {
 			}
 
 
-	ShowTable();
+	//ShowTable();
 
 	Simplify();
 
@@ -181,7 +181,7 @@ string ChartToExpression::solve(const string &truth_table) {
 			ans = ans + primes[i].show();
 			head = false;
 		}
-	cerr << ans << endl;
+	//cerr << ans << endl;
 	return ans;
 }
 

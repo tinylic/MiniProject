@@ -28,4 +28,41 @@
 	具体的算法会在main$\_$algorithm模块详细介绍。
 
 \subsection{异常处理}
-	我还没做呢
+
+\paragraph{expr$\_$to$\_$truthtable\\}
+	\begin{itemize}
+		\item	对于输入为空字符串，或者都是空格的情况，应该抛出
+			\textbf{EmptyStringError}
+		\item	若输入中出现了非操作符和大写字母以外的字符，应该抛出
+			\textbf{InvalidCharError}
+			
+			例如：	“A + B”\quad	 “a $\&$ b” 
+		\item	若输入的变量没有按照字典顺序命名，则应该抛出
+			\textbf{InvalidVariableError}
+			
+			例如：	n = 2, expr = “A $\&$ C”
+		
+		\item	输入的表达式出现了语法错误，应该抛出
+			\textbf{SyntaxError}
+			
+			例如：	“A $\& |$ B” \quad	“A | () B” 
+			
+		\item	表达式中括号不匹配，应该抛出
+			\textbf{BracketMismatchingError}
+	\end{itemize}
+\paragraph{truthtable$\_$to$\_$expr\\}
+	\begin{itemize}
+		\item	对于输入为空字符串，或者都是空格的情况，应该抛出
+			\textbf{EmptyStringError}
+		\item	若输入中出现了$0$和$1$以外的字符，应该抛出
+			\textbf{InvalidCharError}
+			
+			例如：	“123”	\quad	“1abc” 
+		\item	若输入真值表的长度不是2的整数次幂，应该抛出
+			\textbf{InvalidLengthError}
+			
+			例如：	“111”	\quad	“00000” 	
+	\end{itemize}
+%空串 & EmptyStringError\\
+%				非法字符 & InvalidCharError\\
+%				参数个数$!=2^n$ & InvalidLengthError\\

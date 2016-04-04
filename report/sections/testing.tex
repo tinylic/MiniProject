@@ -40,3 +40,16 @@
 
 		\lstinputlisting{sources/test_part4.txt}	
 \subsection{效率测试}
+	程序运行的速度也是很重要的。
+	
+	由于8个变量的表达式运行时间过长，我们测试的表达式均采用6个变量。
+	
+	测试流程如下：
+		\begin{itemize}
+			\item	随机产生$100$个长度为$2 ^ 6 = 64$的真值表
+			\item	对于每个真值表，运用cross$\_$validation的方法，
+					将expr$\_$to$\_$truthtable和truthtable$\_$to$\_$expr两个函数都运行一遍
+			\item	统计总用时，进而得出长度为$6$时测试数据的平均用时
+		\end{itemize}
+
+		\lstinputlisting{sources/test_part5.txt}

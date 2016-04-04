@@ -1,0 +1,12 @@
+//testing expression to chart
+
+//check sample
+CHECK_EQUAL(ETC.solve(3, "~A | B & C"), "11010101");
+
+//check unit input
+CHECK_EQUAL(ETC.solve(1, "A"), "10");
+CHECK_EQUAL(ETC.solve(2, "A"), "1010");
+
+//check complex input
+CHECK_EQUAL(ETC.solve(4, "A & ~B ^ C & D"), "1101001000100010");
+

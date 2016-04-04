@@ -1,0 +1,19 @@
+//testing expression to chart
+
+//check empty input
+CHECK_THROW(ETC.solve(1, "   "), EmptyStringError);
+
+//check invalid characters
+CHECK_THROW(ETC.solve(2, "A + B"), InvalidCharError);
+
+//check invalid variables
+CHECK_THROW(ETC.solve(2, "A | C"), InvalidVariableError);
+
+//check syntax error
+CHECK_THROW(ETC.solve(2, "A | ^ B"), SyntaxError);
+CHECK_THROW(ETC.solve(1, "AA"), SyntaxError);
+CHECK_THROW(ETC.solve(2, "A(A | B)"), SyntaxError);
+
+//check bracket mismatching
+CHECK_THROW(ETC.solve(2, "A ^ B)"), BracketMismatchingError);
+

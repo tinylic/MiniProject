@@ -1,0 +1,22 @@
+for (int i = 0; i < MAX_CASES; i++) {
+	string test_string = "";
+	//generate a test string
+	int NumVar = 6;
+	for (int j = 0; j < (1 << NumVar); j++) {
+		int val = rand() % 2;
+		test_string += val + '0';
+	}
+	clock_t start_time = clock();
+	string expr = CTE.solve(test_string);
+	clock_t cte_time = clock();
+	CHECK_EQUAL(ETC.solve(NumVar, expr), test_string);
+	clock_t end_time = clock();
+	// truth_table to expression time
+	double mCTE = (double)(cte_time - start_time) / CLOCKS_PER_SEC;
+	// expression to truth_table time
+	double mETC = (double)(end_time - cte_time) / CLOCKS_PER_SEC;
+	// total time
+	double mTotal = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+	//output the time	
+	fout << i + 1 << ',' << mCTE << ',' << mETC << ',' << mTotal << endl;
+}

@@ -34,7 +34,7 @@ private:
 
 	int CountOne(int x);
 
-	vector<implication*> UPI;
+	vector<int> UPI;
 public:
 	ChartToExpression();
 

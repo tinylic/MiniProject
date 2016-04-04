@@ -18,11 +18,9 @@ class ChartToExpression {
 private:
 	vector<int> MinTerm;
 
-	vector<int> MinTermCovered[1 << MAX_N];
+	vector<int> M0, M1;
 
 	bool table[1 << MAX_N][1 << MAX_N];
-
-	bool contained[1 << MAX_N];
 
 	int TotalVariables;
 
@@ -34,7 +32,6 @@ private:
 
 	int CountOne(int x);
 
-	vector<int> UPI;
 public:
 	ChartToExpression();
 
@@ -43,6 +40,8 @@ public:
 	void Simplify();
 
 	void Quine_McCluskey();
+
+	void mul(vector<int> &a, const vector<int> &b);
 
 	string solve(const string &truth_table);
 

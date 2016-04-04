@@ -17,7 +17,7 @@
 #include <cctype>
 #include <vector>
 #define MAX_N 10
-#define MAX_CASES 20
+#define MAX_CASES 100
 
 struct InvalidCharError{};
 struct InvalidVariableError{};

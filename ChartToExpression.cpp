@@ -39,49 +39,41 @@ bool ChartToExpression::CheckContained(const implication &imp, const int &x) {
 	return true;
 }
 
-void ChartToExpression::Simplify() {
-	for (unsigned i = 0; i < MinTerm.size(); i++)
-		if (MinTermCovered[i].size() == 1) {
-			int index = MinTermCovered[i].at(0);
-			primes[index].selected = true;
-			for (unsigned j = 0; j < primes[index].ImpContained.size(); j++)
-				contained[primes[index].ImpContained[j]] = true;
+void ChartToExpression::mul(vector<int> &a, const vector<int> &b) {
+	vector<int> v;
+	for (int i = 0; i < a.size(); i++)
+		for (int j = 0; j < b.size(); j++)
+			v.push_back(a[i] | b[j]);
+	sort(v.begin(), v.end());
+	v.erase(unique(v.begin(), v.end()), v.end());
+	for (int i = 0; i < v.size() - 1; i++)
+		for (int j = v.size() - 1; j > i; --j) {
+			int z = v[i] & v[j];
+			if ((z & v[i]) == v[i])
+				v.erase(v.begin() + j);
+			else if ((z & v[j]) == v[j]) {
+				size_t t = v[i];
+				v[i] = v[j];
+				v[j] = t;
+				v.erase(v.begin() + j);
+				j = v.size();
+			}
 		}
+	a = v;
+}
 
+void ChartToExpression::Simplify() {
 	//petrick
-	UPI.clear();
-	for (unsigned i = 0; i < primes.size(); i++)
-		if (primes[i].selected == false)
-			UPI.push_back(i);
-	bool tContained[1 << MAX_N];
-	int MinOne = 1 << MAX_N;
-	int result = 0;
-	for (int mask = 0; mask < (1 << (UPI.size())); mask++) {
-		memset(tContained, false, sizeof tContained);
-		for (unsigned i = 0; i < UPI.size(); i++) {
-			int value = (mask >> i) & 1;
-			implication mImp = primes[UPI[i]];
-			if (value) {
-				for (unsigned j = 0; j < mImp.ImpContained.size(); j++)
-					tContained[mImp.ImpContained[j]] = true;
-			}
-		}
-		bool valid = true;
-		for (unsigned i = 0; i < MinTerm.size(); i++)
-			if (contained[i] == false && tContained[i] == false)
-				valid = false;
-		if (valid) {
-			int ones = CountOne(mask);
-			if (MinOne > ones) {
-				MinOne = ones;
-				result = mask;
-			}
-		}
-	}
-	for (int i = 0; i < UPI.size(); i++) {
-		int value = (result >> i) & 1;
-		if (value)
-			primes[UPI[i]].selected = true;
+	M0.clear();
+	for (int i = 0; i < (int)primes.size(); i++)
+		if (table[i][0])
+			M0.push_back(1 << i);
+	for (int k = 1; k < (int)MinTerm.size(); k++) {
+		M1.clear();
+		for (int i = 0; i < (int)primes.size(); i++)
+			if (table[i][k])
+				M1.push_back(1 << i);
+		mul(M0, M1);
 	}
 }
 
@@ -113,30 +105,30 @@ void ChartToExpression::Quine_McCluskey() {
 		imp = roller;
 		//cerr << "---------------------------" << endl;
 		//for (int i = 0; i < imp.size(); i++)
-			//cerr << imp[i].ones << "\t" << imp[i].exp << "\t"
-					//<< (imp[i].used ? 'X' : ' ') << endl;
+		//cerr << imp[i].ones << "\t" << imp[i].exp << "\t"
+		//<< (imp[i].used ? 'X' : ' ') << endl;
 	}
 }
 string ChartToExpression::solve(const string &truth_table) {
 	memset(table, false, sizeof table);
-	memset(contained, false, sizeof contained);
 	MinTerm.clear();
 	primes.clear();
 	imp.clear();
 	//cerr << truth_table << endl;
 	if (truth_table.length() == 0) {
-			throw EmptyStringError{};
+		throw EmptyStringError { };
 	}
 	//get variable numbers
 	for (TotalVariables = 1; (1 << TotalVariables) < truth_table.length();
-			TotalVariables++);
+			TotalVariables++)
+		;
 	if (truth_table.length() != (1 << TotalVariables)) {
-		throw InvalidLengthError{};
+		throw InvalidLengthError { };
 	}
 
 	for (int i = 0; i < truth_table.length(); i++) {
 		if (truth_table[i] != '0' && truth_table[i] != '1') {
-			throw InvalidCharError{};
+			throw InvalidCharError { };
 		}
 		if (truth_table[i] == '1') {
 			MinTerm.push_back(truth_table.length() - i - 1);
@@ -148,7 +140,6 @@ string ChartToExpression::solve(const string &truth_table) {
 		return "0";
 	sort(MinTerm.begin(), MinTerm.end());
 
-
 	//get initial implications
 	for (int i = 0; i < MinTerm.size(); i++)
 		imp.push_back(implication(MinTerm[i], 0, TotalVariables));
@@ -157,25 +148,27 @@ string ChartToExpression::solve(const string &truth_table) {
 	Quine_McCluskey();
 
 	sort(primes.begin(), primes.end());
-	for (int i = 0; i < MinTerm.size(); i++)
-		MinTermCovered[i].clear();
 	for (int i = 0; i < primes.size(); i++)
 		for (int j = 0; j < MinTerm.size(); j++)
-			if (CheckContained(primes[i], MinTerm[j])) {
+			if (CheckContained(primes[i], MinTerm[j]))
 				table[i][j] = true;
-				primes[i].ImpContained.push_back(j);
-				MinTermCovered[j].push_back(i);
-			}
-
 
 	//ShowTable();
 
 	Simplify();
 
+	int MinOne = CountOne(M0[0]);
+	int mask = 0;
+	for (int i = 1; i < M0.size(); i++) {
+		if (MinOne > CountOne(M0[i])) {
+			MinOne = CountOne(M0[i]);
+			mask = i;
+		}
+	}
 	bool head = true;
 	string ans = "";
 	for (int i = 0; i < primes.size(); i++)
-		if (primes[i].selected) {
+		if ((M0[mask] >> i) & 1) {
 			if (!head)
 				ans = ans + " | ";
 			ans = ans + primes[i].show();

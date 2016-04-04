@@ -102,28 +102,8 @@
 	\lstinputlisting{sources/algo_part3.txt}	
 
 \subsubsection{化简}
-	化简分为两步：
-	\begin{itemize}
-		\item	若一个最小项只被一个质蕴涵包含，则该质蕴涵必须选
-		\item	若剩余未被覆盖的最小项均被多个质蕴涵包含，则运用petrick算法进行化简
-	\end{itemize}
-\paragraph{基础化简\\}
-	首先进行筛选，若一个最小项只被一个质蕴涵包含，则直接标记该质蕴涵为已选
-
-	\lstinputlisting{sources/algo_part4.txt}	
-
-\paragraph{进阶化简\\}
-	若出现以下这种情况，基本的化简就无计可施了：
-
-	\begin{figure}[h]
-		\centering
-		\includegraphics[scale=1]{images/petrick.jpg}
-	\end{figure}
-
-	即每个最小项都被至少两个质蕴涵覆盖。
+	常用方法是petrick化简
 	
-	通用的算法是使用petrick化简，但是由于本题数据范围较小，可以直接对剩下的质蕴涵，直接穷举它是否被取，然后从所有方案中取选择质蕴涵最少的方案。
-	
-	这种方法的时间复杂度为$O(2 \land \mbox{剩余质蕴涵个数})$，由于剩余质蕴涵个数不会超过$2 ^ {n/2}$，因此时间复杂度不会超过$2 ^ {16} = 65536$，是完全可以接受的
+	这种方法的时间复杂度为$O(（2^n）^2)$，由于$n \le 8$，因此时间复杂度不会超过$2 ^ {16} = 65536$，是完全可以接受的
 	
 	\lstinputlisting{sources/algo_part5.txt}	

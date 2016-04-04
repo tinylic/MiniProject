@@ -100,12 +100,8 @@ ChartToExpression类声明如下：
 			vector<int> MinTerm & 输入的最小项,用int表示\\
 			vector<implication> imp & 储存最小项,参与Q-M算法计算\\
 			vector<implication> roller & Q-M算法中与imp迭代的数组\\
-			vector<int> MinTermCovered[1 << MAX$\_$N] &
-			可以覆盖该最小项的所有蕴涵\\
 			bool table[1 << MAX$\_$N][1 << MAX$\_$N] &
 			可视化蕴涵与最小项的关系\\
-			bool contained[1 << MAX$\_$N] & 
-			表示每个蕴涵项是否需要petrick化简\\
 			vector<implication> primes &
 			储存质蕴涵项\\
 

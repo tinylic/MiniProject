@@ -102,7 +102,14 @@
 	\lstinputlisting{sources/algo_part3.txt}	
 
 \subsubsection{化简}
-	常用方法是petrick化简
+	常用方法是petrick化简，它的算法流程如下：
+	\begin{itemize}
+		\item	找出所有的质蕴涵项
+		\item	画质蕴涵项图表，利用Q-M方法去除所有的实质蕴涵项
+		\item	对于剩余的质蕴涵项表，写出所有可能覆盖的POS表示，包含每一个剩余的最小项列的质蕴涵项积项
+		\item	转化为SOP
+		\item	找出包含最少质蕴涵项的积项，得到最小覆盖
+	\end{itemize}
 	
 	这种方法的时间复杂度为$O(（2^n）^2)$，由于$n \le 8$，因此时间复杂度不会超过$2 ^ {16} = 65536$，是完全可以接受的
 	

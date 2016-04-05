@@ -114,7 +114,7 @@ int test_main() {
 		Total_CTE	 += mCTE;
 		Total_ETC	 += mETC;
 		Total		 += mTotal;
-		fout << i + 1 << ',' << mCTE << ',' << mETC << ',' << mTotal << endl;
+		fout << i + 1 << "," << Total_CTE / (i + 1) << "," << Total_ETC / (i + 1) << "," << Total / (i + 1) << endl;
 	}
 	fout << Total_CTE << "," << Total_ETC << "," << Total << endl;
 	fout << Total_CTE / MAX_CASES << "," << Total_ETC / MAX_CASES << "," << Total / MAX_CASES << endl;

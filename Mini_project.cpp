@@ -86,39 +86,6 @@ int test_main() {
 	//check invalid truthtable length
 	CHECK_THROW(CTE.solve("101"), InvalidLengthError);
 
-
-	//speed test
-
-	ofstream fout("report.csv");
-	fout << setiosflags(ios::fixed) << setprecision(3);
-	double Total_CTE = 0;
-	double Total_ETC = 0;
-	double Total = 0;
-	for (int i = 0; i < MAX_CASES; i++) {
-		string test_string = "";
-		int NumVar = 6;
-		for (int j = 0; j < (1 << NumVar); j++) {
-			int val = rand() % 2;
-			test_string += val + '0';
-		}
-		clock_t start_time = clock();
-		cerr << test_string << endl;
-		string expr = CTE.solve(test_string);
-		cerr << expr << endl;
-		clock_t cte_time = clock();
-		CHECK_EQUAL(ETC.solve(NumVar, expr), test_string);
-		clock_t end_time = clock();
-		double mCTE = (double)(cte_time - start_time) / CLOCKS_PER_SEC;
-		double mETC = (double)(end_time - cte_time) / CLOCKS_PER_SEC;
-		double mTotal = (double)(end_time - start_time) / CLOCKS_PER_SEC;
-		Total_CTE	 += mCTE;
-		Total_ETC	 += mETC;
-		Total		 += mTotal;
-		fout << i + 1 << "," << Total_CTE / (i + 1) << "," << Total_ETC / (i + 1) << "," << Total / (i + 1) << endl;
-	}
-	fout << Total_CTE << "," << Total_ETC << "," << Total << endl;
-	fout << Total_CTE / MAX_CASES << "," << Total_ETC / MAX_CASES << "," << Total / MAX_CASES << endl;
-	return 0;
 }
 int tester() {
 	try {
@@ -146,15 +113,27 @@ int main() {
 	string expr;
 	string truth_table;
 	int n;
+	int opt;
 	if (tester() == exitSuccess)
 		cout << "Test Finished" << endl;
-	//getline(cin, truth_table);
-	scanf("%d\n", &n);
-	getline(cin, expr);
-	cout << expr_to_truthtable(n, expr);
-	//cout << truthtable_to_expr(truth_table);
-	//ETC.solve();
-	//cout << CTE.solve();
-	//cout << "Hello\n";
+
+	do {
+		cout << "Please input instruction(0 : expr_to_chart 1 : chart_to_expr):" << endl;
+	}while (scanf("%d", &opt) != 1 || (opt != 0 && opt != 1));
+	getchar();
+
+	if (opt == 0) {
+		cout << "Please input n:" << endl;
+		scanf("%d", &n);
+		getchar();
+		cout << "Please input the expression:" << endl;
+		getline(cin, expr);
+		cout << expr_to_truthtable(n, expr);
+	}
+	else {
+		cout << "Please input the truth_table:" << endl;
+		getline(cin, truth_table);
+		cout << truthtable_to_expr(truth_table);
+	}
 	return 0;
 }

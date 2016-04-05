@@ -103,10 +103,6 @@ void ChartToExpression::Quine_McCluskey() {
 				primes.push_back(imp[i]);
 		sort(roller.begin(), roller.end());
 		imp = roller;
-		//cerr << "---------------------------" << endl;
-		//for (int i = 0; i < imp.size(); i++)
-		//cerr << imp[i].ones << "\t" << imp[i].exp << "\t"
-		//<< (imp[i].used ? 'X' : ' ') << endl;
 	}
 }
 string ChartToExpression::solve(const string &truth_table) {
@@ -174,7 +170,6 @@ string ChartToExpression::solve(const string &truth_table) {
 			ans = ans + primes[i].show();
 			head = false;
 		}
-	//cerr << ans << endl;
 	return ans;
 }
 

@@ -1,11 +1,11 @@
 //testing chart to expression
 
 //check empty input
-CHECK_THROW(CTE.solve(""), EmptyStringError);
+CHECK_THROW(truthtable_to_expr(""), EmptyStringError);
 
 //check invalid input numbers
-CHECK_THROW(CTE.solve("1234"), InvalidCharError);
+CHECK_THROW(truthtable_to_expr("1234"), InvalidCharError);
 
 //check invalid truthtable length
-CHECK_THROW(CTE.solve("101"), InvalidLengthError);
+CHECK_THROW(truthtable_to_expr("101"), InvalidLengthError);
 
